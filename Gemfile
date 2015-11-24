@@ -38,6 +38,9 @@ group :development, :test do
   gem 'byebug'
   gem 'faker'
   gem 'rspec-rails'
+  gem 'factory_girl_rails'
+  gem 'capybara'
+  gem 'launchy'
 end
 
 group :development do

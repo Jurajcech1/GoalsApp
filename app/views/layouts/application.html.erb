@@ -8,11 +8,14 @@
 </head>
 <body>
 
-<%= yield %>
+<%= flash.now[:errors] %>
 
 <% if current_user %>
 <%= button_to "Sign Out", session_url, :method => :delete %>
+<%= current_user.username %>
 <% end %>
+
+<%= yield %>
 
 </body>
 </html>
