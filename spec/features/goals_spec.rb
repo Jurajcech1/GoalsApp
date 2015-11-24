@@ -10,10 +10,12 @@ describe "the goals process", :type => :feature do
     click_on 'Sign In'
   end
 
-  before(:each) do
-    user_one = User.create(username: 'Billy', password: 'qwerty')
-    user_two = User.create(username: 'Genevieve', password: 'qwerty')
-  end
+  # before(:each) do
+    # user_one = User.create(username: 'Billy', password: 'qwerty')
+    # user_two = User.create(username: 'Genevieve', password: 'qwerty')
+    let!(:user_one) { FactoryGirl.create(:user) }
+    let!(:user_two) { FactoryGirl.create(:user) }
+  # end
 
   #user_id
   #description
@@ -21,62 +23,78 @@ describe "the goals process", :type => :feature do
   #completion_status
 
   feature "Goals: user can" do
-    before(:each) do
-      goal1 = Goal.new(description: "Pass the test", privacy_status: "private", completion_status: "false")
-      goal2 = Goal.new(description: "Finish the burrito", privacy_status: "public", completion_status: "true")
-    end
+      let!(:goal_one) { FactoryGirl.build(:goal) }
+      let!(:goal_two) { FactoryGirl.build(:goal) }
 
     scenario "reach goal creation page" do
+      sign_in(user_one)
       visit goals_url
       click_on 'Create Goal'
       expect(page).to have_content "Create Goal"
     end
 
-    def create_goal(goal)
+    def create_goal(goal, privacy)
       visit new_goal_url
-      fill_in 'Description', with: goal1.description
-      fill_in 'Status', with: goal1.privacy_status
-      fill_in 'Complete?', with: goal1.completion_status
+      fill_in 'Description', with: goal.description
+      choose privacy
+      select 'Incomplete', from: "Complete?"
       click_on 'Create Goal'
     end
 
     scenario "create new goals for only themselves" do
       sign_in(user_one)
-      create_goal(goal1)
-      expect(page).to have_content "Pass the test"
+      create_goal(goal_one, "Public")
+      expect(page).to have_content goal_one.description
     end
 
     scenario "edit own goals" do
-
+      sign_in(user_one)
+      create_goal(goal_one, "Public")
+      click_on "Edit Goal"
+      fill_in 'Description', with: "Changing description"
+      click_on "Edit Goal"
+      expect(page).to have_content "Changing description"
     end
 
     scenario "not edit others' goals" do
-
+      sign_in(user_one)
+      create_goal(goal_one, "Public")
+      click_on "Sign Out"
+      sign_in(user_two)
+      click_on Goal.last.description
+      expect(page).not_to have_content "Edit Goal"
     end
 
+    scenario "delete own goals" do
+      sign_in(user_one)
+      create_goal(goal_one, "Public")
+      click_on "Delete Goal"
+      expect(page).to have_content "All Goals"
+      expect(page).not_to have_content goal_one.description
+    end
 
-    scenario "delete only own goals" do
-
+    scenario "not delete others' goals" do
+      sign_in(user_one)
+      create_goal(goal_one, "Public")
+      click_on "Sign Out"
+      sign_in(user_two)
+      click_on Goal.last.description
+      expect(page).not_to have_content "Delete Goal"
     end
 
     scenario "mark goals as 'Complete'" do
-
+      sign_in(user_one)
+      create_goal(goal_one, "Public")
+      expect(page).to have_content "incomplete"
+      click_on "mark as completed"
+      expect(page).to have_content "complete"
     end
 
     scenario "view all of own goals" do
-
-    end
-
-    scenario "can view all public goals" do
-
-    end
-
-    scenario "can't view others' private goals" do
-
-    end
-
-    scenario "can't create goals for others" do
-
+      sign_in(user_one)
+      create_goal(goal_one, "Private")
+      click_on "Goals Page"
+      expect(page).to have_content goal_one.description
     end
   end
 end

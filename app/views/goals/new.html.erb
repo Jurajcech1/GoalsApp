@@ -6,11 +6,13 @@
   <label for="goal_description">Description</label>
   <input type="text" name=goal[description] id="goal_description">
   <br>
-  <label>Privacy</label>
-  <input type="radio" name=goal[privacy_status] value="private" id="privacy_status_private">
-  <label for="privacy_status_private">Private</label>
-  <input type="radio" name=goal[privacy_status] value="public" id="privacy_status_public">
-  <label for="privacy_status_public">Public</label>
+  <label id="privacy">Privacy</label>
+  <div id="privacy">
+    <input type="radio" name=goal[privacy_status] value="private" id="privacy_status_private">
+    <label for="privacy_status_private">Private</label>
+    <input type="radio" name=goal[privacy_status] value="public" id="privacy_status_public">
+    <label for="privacy_status_public">Public</label>
+  </div>
   <br>
   <label for="completion_status">Complete?</label>
   <select class="" name=goal[completion_status] id="completion_status">

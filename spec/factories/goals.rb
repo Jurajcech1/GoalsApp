@@ -1,9 +1,14 @@
 FactoryGirl.define do
   factory :goal do
-    description "MyString"
-    privacy_status "MyString"
-    completion_status "MyString"
-    user_id "MyString"
+    description "Pass the test"
+    privacy_status "private"
+    completion_status "incomplete"
   end
-
 end
+# FactoryGirl.define do
+#   factory :goal2 do
+#     description "Finish the burrito"
+#     privacy_status "public"
+#     completion_status "complete"
+#   end
+# end
